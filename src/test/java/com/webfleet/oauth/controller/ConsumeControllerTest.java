@@ -5,6 +5,7 @@ import com.webfleet.oauth.common.KnownUrls;
 import com.webfleet.oauth.common.RandomKey;
 import com.webfleet.oauth.service.feign.Authserver;
 import com.webfleet.oauth.service.TokenStoreService;
+import com.webfleet.oauth.service.feign.ResponsePayload;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,8 +58,9 @@ class ConsumeControllerTest
     public void shouldRenderView() throws Exception
     {
         final RandomKey randomKey = new RandomKey();
-        Mockito.when(tokenStoreService.getRefreshToken(anyString()))
+        when(tokenStoreService.getRefreshToken(anyString()))
                 .thenReturn("dummy");
+        when(authserver.token(any())).thenReturn(new ResponsePayload());
         mockMvc.perform(get(URL_TEMPLATE)
                 .sessionAttr(Constants.RANDOM_KEY_SESSION_ATTRIBUTE, randomKey))
                 .andExpect(status().isOk())

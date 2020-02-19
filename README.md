@@ -2,6 +2,7 @@
 
 This sample code shows a Java Spring Web application accessing Webfleet Solutions APIs using [OAuth 2.0 authorization code flow](https://tools.ietf.org/html/rfc6749#section-1.3.1).
 
+[![travis](https://api.travis-ci.org/Webfleet-Solutions/oauth-java-example.svg?branch=master)]()
 [![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 
 ## Description

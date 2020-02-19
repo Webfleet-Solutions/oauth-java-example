@@ -8,9 +8,9 @@ jdk: oraclejdk8
 jobs:
   include:
     - stage: test
-      script: ./gradlew test --scan -s
+      script: ./gradlew test -s
     - stage: build
-      script: ./gradlew bootWar --scan -s
+      script: ./gradlew bootWar -s
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

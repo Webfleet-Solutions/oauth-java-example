@@ -1,6 +1,5 @@
 package com.webfleet.oauth.controller;
 
-import com.nimbusds.jwt.SignedJWT;
 import com.webfleet.oauth.common.KnownUrls;
 import com.webfleet.oauth.service.TokenStoreService;
 import com.webfleet.oauth.service.feign.Authserver;
@@ -15,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +63,6 @@ public class ConsumeController
             final ResponsePayload responsePayload = this.authserver.token(params);
             // At this point we received a new access_token and refresh_token
             tokenStoreService.updateRefreshToken(responsePayload.getRefreshToken(), principal.getName());
-            SignedJWT signedJWT = SignedJWT.parse(responsePayload.getValue());
             // TODO add API call to WFS API
             model.addAttribute("result", "");
             return CONSUME.viewName();
@@ -78,9 +75,6 @@ public class ConsumeController
                 // Refresh token is no longer valid, either expired or grant was revoked
                 tokenStoreService.deleteRefreshToken(principal.getName());
             }
-        } catch (ParseException e)
-        {
-            LOG.error("Couldn't parse JWT token", e);
         }
         return "redirect:" + KnownUrls.ERROR;
     }
