@@ -1,0 +1,101 @@
+// central build script file
+plugins {
+    id "java"
+    id "war"
+    id "eclipse"
+    id "idea"
+    id "org.springframework.boot" version "2.2.4.RELEASE"
+    id "io.spring.dependency-management" version "1.0.9.RELEASE"
+}
+
+ext {
+    set("springCloudVersion", "Hoxton.SR1")
+    env = System.getenv()
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat" // exclude tomcat, because only jetty is used
+    compile.exclude module: "spring-boot-starter-logging"// exclude otherwise spring expects a logback configuration
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+dependencies {
+
+    // Web
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    providedRuntime "org.springframework.boot:spring-boot-starter-jetty"
+
+    // Security
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.security:spring-security-taglibs"
+
+    // JWT handling
+    implementation "com.nimbusds:nimbus-jose-jwt:8.6"
+
+    // JSP support
+    implementation "org.eclipse.jetty:apache-jsp"
+    implementation "javax.servlet:jstl"
+
+    // JSON binding
+    implementation "org.springframework.boot:spring-boot-starter-json"
+
+    // Logging
+    implementation "org.springframework.boot:spring-boot-starter-log4j2"
+    // jackson-dataformat-yaml is required to process log4j2.yml
+    runtimeOnly "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.10"
+
+    // REST client
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
+    // Send application/x-www-form-urlencoded with feign
+    implementation "io.github.openfeign.form:feign-form:3.8.0"
+
+    // Database
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+    runtimeOnly "com.h2database:h2"
+
+
+    // Tests
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+    }
+
+    // Test security helpers
+    testImplementation("org.springframework.security:spring-security-test")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+springBoot {
+    buildInfo{
+        properties {
+            group = group
+            additional = ['number': build]
+        }
+    }
+}
+
+// bootJar task generates an incomplete jar which does not include webapp resources
+//bootJar.enabled = false
+
+bootWar {
+    archiveClassifier = build.toString()
+    manifest {
+        attributes('Implementation-Title': title,
+                'Implementation-Version': archiveVersion.getOrElse("0.0"))
+    }
+}

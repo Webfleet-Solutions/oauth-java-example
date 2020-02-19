@@ -1,0 +1,3 @@
+Webfleet Solutions - ${application.title}${application.formatted-version}
+
+Running with Spring Boot${spring-boot.formatted-version}
