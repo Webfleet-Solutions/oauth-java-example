@@ -175,7 +175,7 @@ Revoking a refresh token requires the following parameters in a form encoded req
 
 |Parameter|Mandatory|Description|
 |---------|---------|-----------|
-|__token__|:white:check_mark:|Refresh token to be revoked|
+|__token__|:white_check_mark:|Refresh token to be revoked|
 
 Example using [Basic authentication](https://tools.ietf.org/html/rfc7235)
 
