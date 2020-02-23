@@ -24,7 +24,7 @@ This application features:
 
 ### Client authentication
 
-Flow starts on _/linkAccount_ endpoint [_LinkAccountController_](./src/main/java/com/webfleet/oauth/controller/LinkAccountController.java), 
+Flow starts on _/linkAccount_ endpoint in [_LinkAccountController_](./src/main/java/com/webfleet/oauth/controller/LinkAccountController.java), 
 simply redirecting the user-agent (browser) to Webfleet Solutions Authserver authorization endpoint indicating the flow to follow (**response_type=code**).
 
 Authorization request example triggering user's authentication:
@@ -35,20 +35,20 @@ Authorization request example triggering user's authentication:
 |**client_id**|:white_check_mark:|Client identifier provided by Webfleet solutions during registration process|
 |**redirect_uri**|:white_check_mark:|Callback uri user-agent should be redirected to after successful authentication|
 |**state**|:white_check_mark:|Random value used for validation during callback request|
-|scopes||Scopes parameter with requesting scopes. Optional, specific APIs documentation |
+|scopes|optional|Scopes parameter with requesting scopes. See Webfleet Solutions API documentation to learn about required scopes|
 
 ```http
 GET /uaa/oauth/authorize?scope=<YOUR_SCOPES>&redirect_uri=<YOUR_REDIRECT_URI>&client_id=<YOUR_CLIENT_ID>&response_type=code&state={random} HTTP/1.1
 Host: auth.webfleet.com
 ```
 
-Replacing placeholders with the appropriate values the request will trigger user authentication on Webfleet Solutions Authserver.
+Replacing placeholders with the appropriate values the request will trigger user authentication on Webfleet Solutions Authserver requesting the user to introduce the credentials.
 
 ![Webfleet Solutions Login Page](./assets/login_page.png) 
 
-Once the user has authenticated its user-agent will be redirected to the indicated uri in the **redirect_uri** parameter. 
+Once the user has authenticated its user-agent is redirected to the uri informed in the **redirect_uri** parameter. 
 In this sample it points to the [_CallbackController_](./src/main/java/com/webfleet/oauth/controller/CallbackController.java). 
-Modify _webfleet.redirecturi_ setting in [application.yml](./src/main/resources/application.yml) to match your client's settings.
+Modify _webfleet.redirecturi_ setting in [application.yml](./src/main/resources/application.yml) to match your setup.
 
 Webfleet Solutions Authserver will add a an authorization code as query parameter (**code**) to the callback uri which can be used to obtain access and refresh tokens.
 
@@ -88,7 +88,7 @@ A successful response from the previous request would be something like:
   "access_token": "string",
   "token_type": "bearer",
   "refresh_token": "string",
-  "expires_in": int,
+  "expires_in": 0,
   "scope": "string",
   "services": [],
   "jti": "string"
@@ -97,8 +97,7 @@ A successful response from the previous request would be something like:
 
 - **access_token** : Used to authorize Webfleet Solutions APIs requests
 - **refresh_token** : Used to obtain a new **access_token**, **MUST** be stored safely (recommendation: use symmetric encryption to persist it)
-- **token_type** : How this token is used to authenticate requests. Default 'bearer' meaning must be informed in any request to authenticated resource. 
-For other implementations see OAuth spec
+- **token_type** : How this token is used to authenticate requests. Default 'bearer' meaning must be informed using a [bearer authorization header](https://tools.ietf.org/html/rfc6750). 
 - **expires_in** : Access token expiration time duration in seconds
 - **scope** : Scopes granted to the provided access token
 - **services** : Custom property carrying Webfleet Solutions information
@@ -115,10 +114,11 @@ For other implementations see OAuth spec
 
 ### Requesting Webfleet Solutions API
 
-A valid not expired access token to consume a Webfleet Solutions API, simply it must be informed using an _Authorization_ header.
+To request a protected resource from a Webfleet Solutions API we need a valid not expired access token informed using an _Authorization_ header using a Bearer token ([RFC6750](https://tools.ietf.org/html/rfc6750#section-2.1)).
 
 ```http
 GET /api HTTP/1.1
+Host: api.webfleet.com
 ...
 Authorization: Bearer <ACCESS_TOKEN>
 ...
@@ -132,14 +132,15 @@ This token may have expired or may expire during the process, especially if this
 
 Once an access token has expired, a refresh token can be used to request a new access token without requesting the resource owner to authenticate again.
 
-This is shown in _/refresh_ endpoint of [_RefreshTokenController_](./src/main/java/com/webfleet/oauth/controller/RefreshTokenController.java)
+This is shown in _/refresh_ endpoint in [_RefreshTokenController_](./src/main/java/com/webfleet/oauth/controller/RefreshTokenController.java)
 
 ![Refresh token](./assets/refresh_token.png)
 
-This is similar to the previous step in where we obtained an access token using an authorization code, remark there is no authorization code, instead we got a refresh token which we can use on Webfleet Solutions Authserver with a different flow, [OAuth 2.0 Refresh token grant flow](https://tools.ietf.org/html/rfc6749#section-6). 
+This is similar to previous step in where an access token is obtained using an authorization code, remark there is no authorization code in this flow, instead we use a refresh token which we can use on Webfleet Solutions Authserver with a different flow, [OAuth 2.0 Refresh token grant flow](https://tools.ietf.org/html/rfc6749#section-6), to issue a new access token. 
 
 ```http
 POST /uaa/oauth/token HTTP/1.1
+Host: auth.webfleet.com
 Content-type: application/x-www-form-urlencoded
 Accept: application/json
 
@@ -153,18 +154,25 @@ A successful response will response something like:
   "access_token": "string",
   "token_type": "bearer",
   "refresh_token": "string",
-  "expires_in": int,
+  "expires_in": 0,
   "scope": "string",
   "services": [],
   "jti": "string"
 }
 ``` 
 
+- **access_token** : Used to authorize Webfleet Solutions APIs requests
+- **refresh_token** : Used to obtain a new **access_token**, **MUST** be stored safely (recommendation: use symmetric encryption to persist it)
+- **token_type** : How this token is used to authenticate requests. Default 'bearer' meaning must be informed using a [bearer authorization header](https://tools.ietf.org/html/rfc6750). 
+- **expires_in** : Access token expiration time duration in seconds
+- **scope** : Scopes granted to the provided access token
+- **services** : Custom property carrying Webfleet Solutions information
+- **jti** : Access token identifier
+
 > **Note**
 > 
 > Refreshing an access token returns a new **refresh_token**. 
 > New refresh token must replace previously stored ones.
->
 
 ### Revoking refresh tokens
 
@@ -178,7 +186,7 @@ Revoking a refresh token requires the following parameters in a form encoded req
 |---------|---------|-----------|
 |__token__|:white_check_mark:|Refresh token to be revoked|
 
-Example using [Basic authentication](https://tools.ietf.org/html/rfc7235)
+Example using [Basic authentication](https://tools.ietf.org/html/rfc7235) to inform client credentials
 
 ```http
 POST /uaa/oauth/revoke
@@ -189,7 +197,9 @@ Content-Type: application/x-www-form-urlencoded
 token=eyJhbGciOiJ...
 ```
 
-A successful response will always return HTTP 200 OK status meaning the refresh token was revoked, for security reasons the response if the refresh token was not revoked  will keep being HTTP 200 OK.
+A successful response will always return 200 OK HTTP status meaning the refresh token was revoked. 
+
+As defined in [RFC7009](https://tools.ietf.org/html/rfc7009#section-2.2) revocation response will return 200 OK HTTP status even for invalid tokens, revoking an invalid token has no purpose since its invalidation is already achieved. 
 
 ## Setup
 
@@ -226,8 +236,9 @@ Alternatively you may run it as a java application whose main class is **com.web
 
 ### Docker 
 
-You may also use the provided Docker descriptor to easily run the application without installing any other dependencies than Docker.
-Replace your client credentials placeholders to successfully run the Docker container.
+A Docker descriptor is provided to easily run the application without installing any other dependencies than [Docker](https://www.docker.com/).
+
+Replace your client credentials with the placeholders in the below command to build and run the container.
 
 ```bash
 docker build -t oauth-java-example .
@@ -242,4 +253,4 @@ oauth-java-example
 
 ## License
 
-This code is licensed under [MIT License.]((https://opensource.org/licenses/MIT)) 
+This code is licensed under [MIT License.](https://opensource.org/licenses/MIT) 
