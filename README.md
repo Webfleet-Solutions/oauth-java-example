@@ -31,10 +31,10 @@ Authorization request example triggering user's authentication:
 
 |Parameter|Mandatory| Description|
 |---------|---------|------------|
-|**response_type**|:white_check_mark:|OAuth 2.0 grant flow, we are using **code** to signal we are triggering an [authorization code flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)|
-|**client_id**|:white_check_mark:|Client identifier provided by Webfleet solutions during registration process|
-|**redirect_uri**|:white_check_mark:|Callback uri user-agent should be redirected to after successful authentication|
-|**state**|:white_check_mark:|Random value used for validation during callback request|
+|**response_type**|:heavy_check_mark:|OAuth 2.0 grant flow, we are using **code** to signal we are triggering an [authorization code flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)|
+|**client_id**|:heavy_check_mark:|Client identifier provided by Webfleet solutions during registration process|
+|**redirect_uri**|:heavy_check_mark:|Callback uri user-agent should be redirected to after successful authentication|
+|**state**|:heavy_check_mark:|Random value used for validation during callback request|
 |scopes|optional|Scopes parameter with requesting scopes. See Webfleet Solutions API documentation to learn about required scopes|
 
 ```http
@@ -74,11 +74,11 @@ grant_type=authorization_code&client_id=<YOUR_CLIENT_ID>&client_secret=<YOUR_CLI
 
 |Parameter|Mandatory| Description|
 |---------|---------|------------|
-|**grant_type**|:white_check_mark:| OAuth 2.0 grant flow, we are using **authorization_code** following [authorization code flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)|
-|**client_id**|:white_check_mark:|Client identifier provided by Webfleet solutions during registration process|
-|**client_secret**|:white_check_mark:|Client secret provided by Webfleet solutions during registration process|
-|**code**|:white_check_mark:|Authorization code obtained during the authentication process |
-|**redirect_uri**|:white_check_mark:|Redirect uri associated to the OAuth client provided during the partner registration process|
+|**grant_type**|:heavy_check_mark:| OAuth 2.0 grant flow, we are using **authorization_code** following [authorization code flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)|
+|**client_id**|:heavy_check_mark:|Client identifier provided by Webfleet solutions during registration process|
+|**client_secret**|:heavy_check_mark:|Client secret provided by Webfleet solutions during registration process|
+|**code**|:heavy_check_mark:|Authorization code obtained during the authentication process |
+|**redirect_uri**|:heavy_check_mark:|Redirect uri associated to the OAuth client provided during the partner registration process|
 
 
 A successful response from the previous request would be something like: 
@@ -184,7 +184,7 @@ Revoking a refresh token requires the following parameters in a form encoded req
 
 |Parameter|Mandatory|Description|
 |---------|---------|-----------|
-|__token__|:white_check_mark:|Refresh token to be revoked|
+|__token__|:heavy_check_mark:|Refresh token to be revoked|
 
 Example using [Basic authentication](https://tools.ietf.org/html/rfc7235) to inform client credentials
 
