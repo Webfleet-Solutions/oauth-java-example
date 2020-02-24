@@ -1,9 +1,9 @@
 package com.webfleet.oauth.controller;
 
 import com.webfleet.oauth.common.KnownUrls;
-import com.webfleet.oauth.service.feign.Authserver;
-import com.webfleet.oauth.service.feign.ResponsePayload;
 import com.webfleet.oauth.service.TokenStoreService;
+import com.webfleet.oauth.service.feign.Authserver;
+import com.webfleet.oauth.service.feign.OAuthToken;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping(KnownUrls.REFRESH)
-public class RefreshTokenController
-{
+public class RefreshTokenController {
     private static final Logger LOG = LoggerFactory.getLogger(RefreshTokenController.class);
     private final TokenStoreService tokenStoreService;
     private final String clientSecret;
@@ -29,8 +28,7 @@ public class RefreshTokenController
     public RefreshTokenController(final Authserver authserver,
                                   final TokenStoreService tokenStoreService,
                                   @Value("${webfleet.clientid}") final String clientId,
-                                  @Value("${webfleet.clientsecret}") final String clientSecret)
-    {
+                                  @Value("${webfleet.clientsecret}") final String clientSecret) {
         this.tokenStoreService = tokenStoreService;
         this.authserver = authserver;
         this.clientId = clientId;
@@ -38,16 +36,13 @@ public class RefreshTokenController
     }
 
     @RequestMapping
-    public String refreshToken(Principal principal)
-    {
-        try
-        {
+    public String refreshToken(Principal principal) {
+        try {
             // Use refresh_token flow to obtain a new access token
             final String refreshToken = tokenStoreService.getRefreshToken(principal.getName());
-            if (refreshToken == null)
-            {
+            if (refreshToken == null) {
                 LOG.warn("Cannot find a refresh token");
-                return "redirect:" + KnownUrls.LINK_ACCOUNT;
+                return "redirect:" + KnownUrls.SERVICE;
             }
             Map<String, String> params = new HashMap<>();
             // oauth authorization flow we are following, we want to request a token using an auth code flow,
@@ -56,15 +51,13 @@ public class RefreshTokenController
             params.put("client_id", clientId); // oauth client identifier
             params.put("client_secret", clientSecret); // oauth client secret matching previous identifier
             params.put("refresh_token", refreshToken); // refresh token for authorizing access token issuing
-            final ResponsePayload responsePayload = this.authserver.token(params);
+            final OAuthToken oAuthToken = this.authserver.token(params);
             // At this point we received a new access_token and refresh_token
-            tokenStoreService.updateRefreshToken(responsePayload.getRefreshToken(), principal.getName());
+            tokenStoreService.updateRefreshToken(oAuthToken.getRefreshToken(), principal.getName());
             return "redirect:" + KnownUrls.CONSUME;
-        } catch (FeignException e)
-        {
+        } catch (FeignException e) {
             //Cannot obtain new access token
-            if (HttpStatus.BAD_REQUEST.value() == e.status())
-            {
+            if (HttpStatus.BAD_REQUEST.value() == e.status()) {
                 LOG.info("Refresh token is no longer valid, either expired or grant was revoked. Deleting from storage");
                 tokenStoreService.deleteRefreshToken(principal.getName());
                 // Refresh token expired or was revoked

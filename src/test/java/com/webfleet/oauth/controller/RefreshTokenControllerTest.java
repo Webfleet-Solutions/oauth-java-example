@@ -3,9 +3,9 @@ package com.webfleet.oauth.controller;
 import com.webfleet.oauth.common.Constants;
 import com.webfleet.oauth.common.KnownUrls;
 import com.webfleet.oauth.common.RandomKey;
-import com.webfleet.oauth.service.feign.Authserver;
-import com.webfleet.oauth.service.feign.ResponsePayload;
 import com.webfleet.oauth.service.TokenStoreService;
+import com.webfleet.oauth.service.feign.Authserver;
+import com.webfleet.oauth.service.feign.OAuthToken;
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +19,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(properties = {"webfleet.clientid=dummy", "webfleet.clientsecret=dummy"})
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
-class RefreshTokenControllerTest
-{
+class RefreshTokenControllerTest {
 
     public static final String URL_TEMPLATE = KnownUrls.REFRESH;
     public static final String VIEW_NAME = KnownUrls.View.REFRESH.viewName();
@@ -42,8 +39,7 @@ class RefreshTokenControllerTest
     private MockMvc mockMvc;
 
     @Test
-    public void shouldRedirectToLoginForm() throws Exception
-    {
+    public void shouldRedirectToLoginForm() throws Exception {
         mockMvc.perform(get(URL_TEMPLATE))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(EXPECTED_LOGIN_URL));
@@ -51,13 +47,12 @@ class RefreshTokenControllerTest
 
     @Test
     @WithMockUser("admin")
-    public void shouldRedirectToConsume() throws Exception
-    {
+    public void shouldRedirectToConsume() throws Exception {
         final RandomKey randomKey = new RandomKey();
         when(tokenStoreService.getRefreshToken(anyString()))
                 .thenReturn("dummy");
         when(authserver.token(anyMap()))
-                .thenReturn(new ResponsePayload());
+                .thenReturn(new OAuthToken());
         mockMvc.perform(get(URL_TEMPLATE)
                 .sessionAttr(Constants.RANDOM_KEY_SESSION_ATTRIBUTE, randomKey))
                 .andExpect(status().is3xxRedirection())
@@ -66,21 +61,19 @@ class RefreshTokenControllerTest
 
     @Test
     @WithMockUser("admin")
-    public void shouldRedirectToLinkAccount() throws Exception
-    {
+    public void shouldRedirectToLinkAccount() throws Exception {
         final RandomKey randomKey = new RandomKey();
         when(tokenStoreService.getRefreshToken(anyString()))
                 .thenReturn(null);
         mockMvc.perform(get(URL_TEMPLATE)
                 .sessionAttr(Constants.RANDOM_KEY_SESSION_ATTRIBUTE, randomKey))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl(KnownUrls.LINK_ACCOUNT));
+                .andExpect(redirectedUrl(KnownUrls.SERVICE));
     }
 
     @Test
     @WithMockUser("admin")
-    public void shouldRenderView() throws Exception
-    {
+    public void shouldRenderView() throws Exception {
         final RandomKey randomKey = new RandomKey();
         when(tokenStoreService.getRefreshToken(anyString()))
                 .thenReturn("dummy");

@@ -10,21 +10,17 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(properties = {"webfleet.clientid=dummy", "webfleet.clientsecret=dummy"})
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
-class HomeControllerTest
-{
+class HomeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void shouldRedirectToLoginForm() throws Exception
-    {
+    public void shouldRedirectToLoginForm() throws Exception {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
@@ -33,8 +29,7 @@ class HomeControllerTest
 
     @Test
     @WithMockUser("admin")
-    public void shouldRenderView() throws Exception
-    {
+    public void shouldRenderView() throws Exception {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk())

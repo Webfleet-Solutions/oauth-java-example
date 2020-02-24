@@ -4,19 +4,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class RandomKeyTest
-{
+public class RandomKeyTest {
 
     private RandomKey randomKey;
 
     @BeforeEach
-    public void setUp()
-    {
+    public void setUp() {
         this.randomKey = new RandomKey();
     }
+
     @Test
-    public void reset()
-    {
+    public void reset() {
         final String orig = this.randomKey.getKey();
         this.randomKey.reset();
         final String result = this.randomKey.getKey();
@@ -24,8 +22,7 @@ public class RandomKeyTest
     }
 
     @Test
-    void getKey()
-    {
+    void getKey() {
         Assertions.assertNotNull(this.randomKey.getKey());
     }
 }

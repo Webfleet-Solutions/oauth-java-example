@@ -24,7 +24,7 @@ This application features:
 
 ### Client authentication
 
-Flow starts on _/linkAccount_ endpoint in [_LinkAccountController_](./src/main/java/com/webfleet/oauth/controller/LinkAccountController.java), 
+Flow starts on ```/service``` endpoint in [_ServiceController_](./src/main/java/com/webfleet/oauth/controller/ServiceController.java), 
 simply redirecting the user-agent (browser) to Webfleet Solutions Authserver authorization endpoint indicating the flow to follow (**response_type=code**).
 
 Authorization request example triggering user's authentication:
@@ -58,8 +58,8 @@ Webfleet Solutions Authserver will add a an authorization code as query paramete
 
 ### Obtaining access and refresh tokens
 
-To obtain access and refresh tokens we need to exchange the previously received authorization code after a successful user authorization. 
-This is shown in the _/callback_ endpoint implemented in [_CallbackController_](./src/main/java/com/webfleet/oauth/controller/CallbackController.java).
+To obtain access and refresh tokens we need to exchange the previously received authorization code after a successful user authorization, 
+this is shown in the  ```/callback``` endpoint implemented in [_CallbackController_](./src/main/java/com/webfleet/oauth/controller/CallbackController.java).
 
 Authorization code exchange request example: 
 
@@ -114,7 +114,7 @@ A successful response from the previous request would be something like:
 
 ### Requesting Webfleet Solutions API
 
-To request a protected resource from a Webfleet Solutions API we need a valid not expired access token informed using an _Authorization_ header using a Bearer token ([RFC6750](https://tools.ietf.org/html/rfc6750#section-2.1)).
+To request a protected resource from a Webfleet Solutions API we need a valid not expired access token informed using an _Authorization_ header using a [Bearer token (RFC6750)](https://tools.ietf.org/html/rfc6750#section-2.1).
 
 ```http
 GET /api HTTP/1.1
@@ -132,7 +132,7 @@ This token may have expired or may expire during the process, especially if this
 
 Once an access token has expired, a refresh token can be used to request a new access token without requesting the resource owner to authenticate again.
 
-This is shown in _/refresh_ endpoint in [_RefreshTokenController_](./src/main/java/com/webfleet/oauth/controller/RefreshTokenController.java)
+This is shown in ```/refresh``` endpoint in [_RefreshTokenController_](./src/main/java/com/webfleet/oauth/controller/RefreshTokenController.java)
 
 ![Refresh token](./assets/refresh_token.png)
 
@@ -163,7 +163,7 @@ A successful response will response something like:
 
 - **access_token** : Used to authorize Webfleet Solutions APIs requests
 - **refresh_token** : Used to obtain a new **access_token**, **MUST** be stored safely (recommendation: use symmetric encryption to persist it)
-- **token_type** : How this token is used to authenticate requests. Default 'bearer' meaning must be informed using a [bearer authorization header](https://tools.ietf.org/html/rfc6750). 
+- **token_type** : How this token is used to authenticate requests. Default 'bearer' meaning must be informed using a [Bearer _Authorization_ header](https://tools.ietf.org/html/rfc6750). 
 - **expires_in** : Access token expiration time duration in seconds
 - **scope** : Scopes granted to the provided access token
 - **services** : Custom property carrying Webfleet Solutions information

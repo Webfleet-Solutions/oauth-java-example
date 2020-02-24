@@ -1,21 +1,33 @@
-<%@ page import="java.util.LinkedHashMap" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    String title = "3rd Party Home Page - Consume TTTSP API";
-    LinkedHashMap<String, String> menu = new LinkedHashMap<>();
-    menu.put("/consent", "Review linked services");
-    menu.put("/consume", "Consume TTTSP API with current token");
-    menu.put("/revoke", "Revoke token");
+    String title = "OAuth Java Example - Consume API";
 %>
-<%@include file="header.jsp" %>
-<%@include file="menu.jsp" %>
-<main class="main-container">
-    <blockquote>This page requests TTTSP API when loaded, click browser's refresh button to place another request to the
-        TTTSP API
-    </blockquote>
-    <p style="padding: 5px; border: 1px solid #d0d5d4">TTTSP API responded <fmt:formatDate value="${tttspApiDate}"
-                                                                                           pattern="yyyy-MM-dd HH:mm:ss"/></p>
+<%@include file="common/header.jsp" %>
+<%@include file="common/menu.jsp" %>
+
+<main role="main" class="container d-flex h-100">
+    <div class="row align-self-center w-100">
+        <div class="col-10 mx-auto">
+            <div class="jumbotron">
+                <h2>Webfleet Solutions API success</h2>
+                <p class="lead">Webfleet solutions API responded successfully to the request using the obtained OAuth
+                    access token.</p>
+                <pre>
+                    <code class="http">GET /api HTTP/1.1
+Host: auth.webfleet.com
+Authorization: Bearer ${access_token}</code>
+                    <code class="json">${result}</code>
+                </pre>
+                <p>We can also revoke the refresh token which will invalidate our refresh token to issue new access
+                    tokens.</p>
+                <p>After this we will need to login in Webfleet Solutions with our customer credentials again to obtain
+                    a new refresh token.</p>
+                <c:url value="<%=KnownUrls.REVOKE%>" var="revoke"/>
+                <a class="btn btn-primary btn-lg" href="${revoke}" role="button">Revoke token</a>
+            </div>
+        </div>
+    </div>
 </main>
-<%@include file="footer.jsp" %>
+<%@include file="common/footer.jsp" %>

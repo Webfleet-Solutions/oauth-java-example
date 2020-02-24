@@ -1,5 +1,6 @@
 package com.webfleet.oauth.controller;
 
+import com.webfleet.oauth.common.Constants;
 import com.webfleet.oauth.common.KnownUrls;
 import com.webfleet.oauth.service.TokenStoreService;
 import org.slf4j.Logger;
@@ -10,24 +11,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.security.Principal;
 
-import static com.webfleet.oauth.common.Constants.HAS_REFRESH_TOKEN;
-
 @Controller
 @RequestMapping(KnownUrls.HOME)
-public class HomeController
-{
+public class HomeController extends AbstractMenuController {
     private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
     private final TokenStoreService tokenStoreService;
 
-    public HomeController(final TokenStoreService tokenStoreService)
-    {
+    public HomeController(final TokenStoreService tokenStoreService) {
+        super(KnownUrls.HOME, KnownUrls.SERVICE);
         this.tokenStoreService = tokenStoreService;
     }
 
     @RequestMapping
-    public String home(Model model, Principal principal)
-    {
-        model.addAttribute(HAS_REFRESH_TOKEN, tokenStoreService.hasRefreshToken(principal.getName()));
+    public String home(Model model, Principal principal) {
+        final boolean hasRefreshToken = tokenStoreService.hasRefreshToken(principal.getName());
+        if (hasRefreshToken) {
+            addMenuOption(KnownUrls.CONSUME);
+        }
+        addMenu(model);
+        model.addAttribute(Constants.HAS_REFRESH_TOKEN, hasRefreshToken);
         return KnownUrls.View.HOME.viewName();
     }
 }

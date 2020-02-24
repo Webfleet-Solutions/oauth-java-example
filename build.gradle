@@ -36,6 +36,7 @@ dependencies {
     // Web
     implementation "org.springframework.boot:spring-boot-starter-web"
     providedRuntime "org.springframework.boot:spring-boot-starter-jetty"
+    implementation "org.springframework.boot:spring-boot-devtools"
 
     // Security
     implementation "org.springframework.boot:spring-boot-starter-security"

@@ -3,8 +3,8 @@ package com.webfleet.oauth.controller;
 import com.webfleet.oauth.common.Constants;
 import com.webfleet.oauth.common.KnownUrls;
 import com.webfleet.oauth.common.RandomKey;
-import com.webfleet.oauth.service.feign.Authserver;
 import com.webfleet.oauth.service.TokenStoreService;
+import com.webfleet.oauth.service.feign.Authserver;
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(properties = {"webfleet.clientid=dummy", "webfleet.clientsecret=dummy"})
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
-class RevokeControllerTest
-{
+class RevokeControllerTest {
 
     public static final String URL_TEMPLATE = KnownUrls.REVOKE;
     public static final String EXPECTED_LOGIN_URL = "http://localhost/login";
@@ -43,8 +42,7 @@ class RevokeControllerTest
     private MockMvc mockMvc;
 
     @Test
-    public void shouldRedirectToLoginForm() throws Exception
-    {
+    public void shouldRedirectToLoginForm() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(URL_TEMPLATE))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
@@ -53,8 +51,7 @@ class RevokeControllerTest
 
     @Test
     @WithMockUser("admin")
-    public void shouldRedirectToHome() throws Exception
-    {
+    public void shouldRedirectToHome() throws Exception {
         final RandomKey randomKey = new RandomKey();
         mockMvc.perform(get(URL_TEMPLATE)
                 .sessionAttr(Constants.RANDOM_KEY_SESSION_ATTRIBUTE, randomKey))
@@ -64,10 +61,9 @@ class RevokeControllerTest
 
     @Test
     @WithMockUser("admin")
-    public void shouldRedirectToError() throws Exception
-    {
+    public void shouldRedirectToError() throws Exception {
         final RandomKey randomKey = new RandomKey();
-        doThrow(mock(FeignException.FeignClientException.class)).when(authserver).revoke(any());
+        doThrow(mock(FeignException.FeignClientException.class)).when(authserver).revoke(any(), any());
 
         mockMvc.perform(get(URL_TEMPLATE)
                 .sessionAttr(Constants.RANDOM_KEY_SESSION_ATTRIBUTE, randomKey))

@@ -18,25 +18,21 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 
 @Configuration
 @EnableFeignClients("com.webfleet.oauth")
-public class FeignConfig
-{
+public class FeignConfig {
     private final ObjectFactory<HttpMessageConverters> messageConverters;
 
-    public FeignConfig(final ObjectFactory<HttpMessageConverters> messageConverters)
-    {
+    public FeignConfig(final ObjectFactory<HttpMessageConverters> messageConverters) {
         this.messageConverters = messageConverters;
     }
 
     @Bean
-    Logger.Level levelLogger()
-    {
+    Logger.Level levelLogger() {
         // Feign's own logger level
         return Logger.Level.FULL;
     }
 
     @Bean
-    Logger logger()
-    {
+    Logger logger() {
         // Required to log with slf4j
         return new Slf4jLogger();
     }
@@ -49,8 +45,7 @@ public class FeignConfig
     @Bean
     @Primary
     @Scope(SCOPE_PROTOTYPE)
-    Encoder feignFormEncoder()
-    {
+    Encoder feignFormEncoder() {
         return new FormEncoder(new SpringEncoder(this.messageConverters));
     }
 }

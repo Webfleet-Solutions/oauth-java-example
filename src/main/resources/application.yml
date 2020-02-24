@@ -27,7 +27,7 @@ authserver:
     ConnectTimeout: 1000
     ReadTimeout: 5000
     MaxAutoRetriesNextServer: 2
-    
+
 spring:
   # Jackson JSON Serialization/Deserialization library
   jackson:

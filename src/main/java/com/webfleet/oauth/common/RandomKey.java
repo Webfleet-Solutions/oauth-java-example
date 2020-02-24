@@ -5,27 +5,22 @@ import java.util.UUID;
 /**
  * Simple pseudo random generator. Used for obtaining non critical random values.
  */
-public class RandomKey
-{
+public class RandomKey {
     private String random;
 
-    public RandomKey()
-    {
+    public RandomKey() {
         initialize();
     }
 
-    private void initialize()
-    {
+    private void initialize() {
         random = UUID.randomUUID().toString();
     }
 
-    public void reset()
-    {
+    public void reset() {
         initialize();
     }
 
-    public String getKey()
-    {
+    public String getKey() {
         return random;
     }
 }
