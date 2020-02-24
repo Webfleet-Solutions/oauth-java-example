@@ -147,6 +147,14 @@ Accept: application/json
 grant_type=refresh_token&client_id=<YOUR_CLIENT_ID>&client_secret=<YOUR_CLIENT_SECRET>&refresh_token={refresh_token}
 ``` 
 
+|Parameter|Mandatory|Description|
+|---------|---------|-----------|
+|**grant_type**|:heavy_check_mark:|OAuth 2.0 grant flow, we are using **refresh_token** following [authorization code flow](https://tools.ietf.org/html/rfc6749#section-1.3.1) to request a new access token|
+|**client_id**|:heavy_check_mark:|Client identifier provided by Webfleet solutions during registration process|
+|**client_secret**|:heavy_check_mark:|Client secret provided by Webfleet solutions during registration process|
+|**refresh_token**|:heavy_check_mark:|Refresh token representing resource owner's previous authorization for issuing access tokens on its behalf|
+
+
 A successful response will response something like:
 
 ```json
@@ -184,7 +192,7 @@ Revoking a refresh token requires the following parameters in a form encoded req
 
 |Parameter|Mandatory|Description|
 |---------|---------|-----------|
-|__token__|:heavy_check_mark:|Refresh token to be revoked|
+|**token**|:heavy_check_mark:|Refresh token to be revoked|
 
 Example using [Basic authentication](https://tools.ietf.org/html/rfc7235) to inform client credentials
 
