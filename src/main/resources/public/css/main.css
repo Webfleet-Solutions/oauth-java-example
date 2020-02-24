@@ -1,0 +1,50 @@
+.main-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.header-container {
+
+}
+
+.title-container {
+
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    font-family: Verdana, Geneva, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.menu-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-container li {
+    display: inline;
+}
+
+.menu-container li a {
+    color: white;
+    text-decoration: none;
+    padding: .5em 1em;
+    width: 12em;
+    background: gray;
+}
+
+.menu-container li a:hover {
+    background: tomato;
+    color: white;
+}
+
+.menu-container pre {
+    word-wrap: break-word;
+    white-space: normal;
+}

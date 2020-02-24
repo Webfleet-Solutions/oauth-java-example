@@ -1,0 +1,8 @@
+.gradle
+assets
+build
+bin
+out
+logs
+.settings
+.idea

@@ -1,0 +1,51 @@
+
+webfleet:
+  # Authserver URL
+  authserver: https://auth.webfleet.com/uaa
+  # OAuth client credentials, these are provided by Webfleet Solutions.
+  # Define them as environment variables
+  clientid: ${WFS_CLIENT_ID}
+  clientsecret: ${WFS_CLIENT_SECRET}
+  # This should have been registered together with client information
+  redirecturi: http://localhost:9080/callback
+  scopes: profile-read
+
+# password used to encrypt stored refresh tokens
+token:
+  password: ${random.value}
+# ports
+server:
+  port: 9080
+  servlet:
+    session:
+      persistent: false
+
+# ribbon client configurations for load balancing and fail-over configuration, referenced by feign
+authserver:
+  ribbon:
+    listOfServers: ${webfleet.authserver}
+    ConnectTimeout: 1000
+    ReadTimeout: 5000
+    MaxAutoRetriesNextServer: 2
+
+spring:
+  # Jackson JSON Serialization/Deserialization library
+  jackson:
+    deserialization:
+      # We rely to have a full OffsetDateTime with the original LocalDate for ReportRequests, see AccountTimeAwareTripReportRange for more information.
+      adjust-dates-to-context-time-zone: false
+    serialization:
+      write-dates-as-timestamps: false
+  jpa:
+    hibernate:
+      ddl-auto: create
+  # H2 configuration
+  # DB_CLOSE_ON_EXIT is recommended by Spring Boot so that it handles the closing of the db when it’s ready.
+  # DB_CLOSE_DELAY it’s in memory there’s no need to delay the shutdown.
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    platform: h2
+  application:
+    name: oauth-java-example
