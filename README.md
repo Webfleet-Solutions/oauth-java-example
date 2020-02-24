@@ -155,7 +155,7 @@ grant_type=refresh_token&client_id=<YOUR_CLIENT_ID>&client_secret=<YOUR_CLIENT_S
 |**refresh_token**|:heavy_check_mark:|Refresh token representing resource owner's previous authorization for issuing access tokens on its behalf|
 
 
-A successful response will response something like:
+A successful response will be something like:
 
 ```json
 {
