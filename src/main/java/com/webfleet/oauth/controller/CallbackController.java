@@ -82,9 +82,9 @@ public class CallbackController extends AbstractMenuController {
         // we are following oauth authorization code grant flow
         // to request a token pair using an auth code flow we provide the obtained authorization code
         params.put("grant_type", "authorization_code");
-        // oauth client identifier, should be registered in TTTSP side
+        // oauth client identifier
         params.put("client_id", clientId);
-        // oauth client secret matching previous identifier
+        // oauth client secret
         params.put("client_secret", clientSecret);
         // the code we received and we need to provide as indicated with grant_type parameter
         params.put("code", code);
